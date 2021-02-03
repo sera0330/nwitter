@@ -1,3 +1,3 @@
-import react from "react";
+import React from "react";
 
 export default () => <span>Edit Profile</span>;
