@@ -5,8 +5,9 @@ import React, { useEffect, useState } from "react";
 const Home = ({ userObj }) => {
   const [nweet, setNweet] = useState(""); // form을 위한 state
   const [nweets, setNweets] = useState([]); // array
-  
-  const getNweets = async() => { // async를 써야 하므로 별도로 선언
+  const [attachment, setAttacthment] = useState(); // 첨부파일 
+
+  const getNweets = async () => { // async를 써야 하므로 별도로 선언
     const dbNweets = await dbService.collection("nweets").get(); // querySnapshot
     dbNweets.forEach((document) => {
       const nweetObject = {
@@ -17,31 +18,31 @@ const Home = ({ userObj }) => {
       setNweets((prev) => [nweetObject, ...prev]); // 작성한 것과 이전 값들 배열로 불러오기
     });
   }
-  
+
   useEffect(() => {// component mount될 때
     // getNweets();
 
     // rerender 하지 않는 방식
     dbService.collection("nweets").onSnapshot(snapshot => { // onSnapshot : db 변동있을 때 알림
-      const nweetArray = snapshot.docs.map(doc => ({ 
-        id: doc.id, 
+      const nweetArray = snapshot.docs.map(doc => ({
+        id: doc.id,
         ...doc.data(),
       }));
       setNweets(nweetArray);
     });
   }, []);
-  
+
   const onSubmit = async (event) => {
     event.preventDefault();
     // add returns promise -> await, async
-    await dbService.collection("nweets").add({ 
+    await dbService.collection("nweets").add({
       text: nweet,
       createdAt: Date.now(),
       creatorId: userObj.uid
     });
     setNweet("");
-  }; 
-  
+  };
+
   const onChange = (event) => {
     const {
       target: { value },
@@ -49,11 +50,37 @@ const Home = ({ userObj }) => {
     setNweet(value);
   };
 
+  const onFileChange = (event) => {
+    // es6 : event.target.files 가져오기
+    const { 
+      target: { files }
+    } = event;
+    const theFile = files[0];
+    const reader = new FileReader();
+    
+    reader.onloadend = (finishedEvent) => { // 파일 로딩이 끝날 때
+      const {
+        currentTarget: { result }
+      } = finishedEvent;
+      setAttacthment(result);
+    }
+    reader.readAsDataURL(theFile);
+  };
+
+  const onClearAttachmentClick = () => setAttacthment(null);
+
   return (
     <div>
       <form onSubmit={onSubmit}>
         <input value={nweet} onChange={onChange} type="text" placeholder="What's on your mind?" maxLength={140} />
+        <input type="file" accept="image/*" onChange={onFileChange} />
         <input type="submit" value="Nweet" />
+        {attachment && (
+          <div>
+            <img src={attachment} width="50px" height="50px"/>
+            <button onClick={onClearAttachmentClick}>Clear</button>
+          </div>
+        )}
       </form>
       <div>
         {nweets.map((nweet) => (
