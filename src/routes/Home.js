@@ -1,6 +1,7 @@
 import Nweet from "components/Nweet";
-import { dbService } from "fbase";
+import { dbService, storageService } from "fbase";
 import React, { useEffect, useState } from "react";
+import { v4 as uuidv4 } from 'uuid'; // To create a random UUID...
 
 const Home = ({ userObj }) => {
   const [nweet, setNweet] = useState(""); // form을 위한 state
@@ -20,8 +21,6 @@ const Home = ({ userObj }) => {
   }
 
   useEffect(() => {// component mount될 때
-    // getNweets();
-
     // rerender 하지 않는 방식
     dbService.collection("nweets").onSnapshot(snapshot => { // onSnapshot : db 변동있을 때 알림
       const nweetArray = snapshot.docs.map(doc => ({
@@ -34,13 +33,26 @@ const Home = ({ userObj }) => {
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    // add returns promise -> await, async
-    await dbService.collection("nweets").add({
+
+    let attachmentUrl = "";
+
+    if (attachment !== "") {
+      // storage.Reference Google Cloud Storage object = bucket
+      const attachmentRef = storageService.ref().child(`${userObj.uid}/${uuidv4()}`);
+      const response = await attachmentRef.putString(attachment, "data_url"); // readAsDataURL
+      attachmentUrl = await response.ref.getDownloadURL();
+    } 
+
+    const nweetObj = {
       text: nweet,
       createdAt: Date.now(),
-      creatorId: userObj.uid
-    });
+      creatorId: userObj.uid,
+      attachmentUrl
+    };
+    
+    await dbService.collection("nweets").add(nweetObj);
     setNweet("");
+    setAttacthment("");
   };
 
   const onChange = (event) => {
@@ -77,7 +89,7 @@ const Home = ({ userObj }) => {
         <input type="submit" value="Nweet" />
         {attachment && (
           <div>
-            <img src={attachment} width="50px" height="50px"/>
+            <img src={attachment} width="50px"/>
             <button onClick={onClearAttachmentClick}>Clear</button>
           </div>
         )}
