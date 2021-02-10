@@ -1,15 +1,51 @@
-import { authService } from "fbase";
-import React from "react";
+import { authService, dbService } from "fbase";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
-export default () => {
+export default ({ userObj, refreshUser }) => {
   const history = useHistory();
+  const [newDisplayName, setNewDisplayName] = useState(userObj.displayName);
   const onLogOutClick = () => {
     authService.signOut();
     history.push("/"); // react router hook으로 이동시키기
   };
+  const getMyNweets = async() => {
+    // where로 필터링
+    const nweets = await dbService 
+    .collection("nweets")
+    .where("creatorId", "==", userObj.uid)
+    .orderBy("createdAt") // The query requires an index
+    .get();
+  };
+  useEffect(() => {
+    getMyNweets();
+  }, [])
+  const onChange = (event) => {
+    const {
+      target: {value},
+    } = event;
+    setNewDisplayName(value);
+  };
+  const onSubmit = async (event) => {
+    event.preventDefault();
+
+    if (userObj.displayName !== newDisplayName) {
+      // firebase.User#updateprofile
+      await userObj.updateProfile({ 
+        displayName: newDisplayName
+      });
+    }
+
+    // updateProfile refresh firebase user
+    // But Navigation is not connected firebase, is userObj
+    refreshUser();
+  };
   return (
     <>
+      <form onSubmit={onSubmit}>
+        <input onChange={onChange} type="text" placeholder="Display Name" value={newDisplayName} />
+        <input type="submit" value="Update Profile" />
+      </form>
       <button onClick={onLogOutClick}>Log Out</button>
     </>
   );

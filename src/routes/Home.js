@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid'; // To create a random UUID...
 const Home = ({ userObj }) => {
   const [nweet, setNweet] = useState(""); // form을 위한 state
   const [nweets, setNweets] = useState([]); // array
-  const [attachment, setAttacthment] = useState(); // 첨부파일 
+  const [attachment, setAttacthment] = useState(""); // 첨부파일 
 
   const getNweets = async () => { // async를 써야 하므로 별도로 선언
     const dbNweets = await dbService.collection("nweets").get(); // querySnapshot

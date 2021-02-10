@@ -5,11 +5,11 @@ import Home from "routes/Home";
 import Profile from "routes/Profile";
 import Navigation from "components/Navigation";
 
-const AppRouter = ( { isLoggedIn, userObj }) => {
+const AppRouter = ( { isLoggedIn, userObj, refreshUser }) => {
   // auth 여부에 따라 렌더링
   return (
     <Router>
-      {isLoggedIn && <Navigation />}
+      {isLoggedIn && <Navigation userObj={userObj} />}
       <Switch>
         {isLoggedIn ? (
           // <> : fragment. 많은 요소 렌더시 사용
@@ -18,7 +18,7 @@ const AppRouter = ( { isLoggedIn, userObj }) => {
               <Home userObj={userObj} />
             </Route>
             <Route exact path="/profile">
-              <Profile />
+              <Profile userObj={userObj} refreshUser={refreshUser} />
             </Route>
             <Redirect from="*" to="/" />
           </>
