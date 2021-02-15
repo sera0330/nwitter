@@ -21,11 +21,11 @@ const Nweet = ({ nweetObj, isOwner }) => {
       text: newNweet
     });
     setEditing(false);
-  }
+  };
   const onChange = (event) => {
     const {target:{value}} = event;
     setNewNweet(value);
-  }
+  };
 
   return (
     <div className="nweet">

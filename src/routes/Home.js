@@ -19,7 +19,7 @@ const Home = ({ userObj }) => {
 
   useEffect(() => {// component mount될 때
     // rerender 하지 않는 방식
-    dbService.collection("nweets").onSnapshot(snapshot => { // onSnapshot : db 변동있을 때 알림
+    dbService.collection("nweets").orderBy("createdAt", "desc").onSnapshot(snapshot => { // onSnapshot : db 변동있을 때 알림
       const nweetArray = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
@@ -30,7 +30,7 @@ const Home = ({ userObj }) => {
 
   return (
     <div className="container">
-      <NweetFactory userObj={userObj}></NweetFactory>
+      <NweetFactory userObj={userObj} />
       <div style={{ marginTop: 30 }}>
         {nweets.map((nweet) => (
           <Nweet key={nweet.id} nweetObj={nweet} isOwner={nweet.creatorId === userObj.uid} />

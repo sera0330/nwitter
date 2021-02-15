@@ -9,17 +9,17 @@ export default ({ userObj, refreshUser }) => {
     authService.signOut();
     history.push("/"); // react router hook으로 이동시키기
   };
-  const getMyNweets = async() => {
-    // where로 필터링
-    const nweets = await dbService 
-    .collection("nweets")
-    .where("creatorId", "==", userObj.uid)
-    .orderBy("createdAt") // The query requires an index
-    .get();
-  };
-  useEffect(() => {
-    getMyNweets();
-  }, [])
+  // const getMyNweets = async() => {
+  //   // where로 필터링
+  //   const nweets = await dbService 
+  //     .collection("nweets")
+  //     .where("creatorId", "==", userObj.uid)
+  //     .orderBy("createdAt") // The query requires an index
+  //     .get();
+  // };
+  // useEffect(() => {
+  //   getMyNweets();
+  // }, [])
   const onChange = (event) => {
     const {
       target: {value},
