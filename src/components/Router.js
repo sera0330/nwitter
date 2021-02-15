@@ -13,7 +13,7 @@ const AppRouter = ( { isLoggedIn, userObj, refreshUser }) => {
       <Switch>
         {isLoggedIn ? (
           // <> : fragment. 많은 요소 렌더시 사용
-          <>
+          <div className="router">
             <Route exact path="/">
               <Home userObj={userObj} />
             </Route>
@@ -21,7 +21,7 @@ const AppRouter = ( { isLoggedIn, userObj, refreshUser }) => {
               <Profile userObj={userObj} refreshUser={refreshUser} />
             </Route>
             <Redirect from="*" to="/" />
-          </>
+          </div>
         ) : (
           <>
             <Route excat path="/">
