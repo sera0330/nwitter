@@ -74,7 +74,7 @@ const NweetFactory = ({ userObj }) => {
       <input id="attac-file" type="file" accept="image/*" onChange={onFileChange} style={{ opacity: 0 }} />
       {attachment && (
         <div className="factoryForm__attachment">
-          <img src={attachment} style={{ backgroundImage: attachment }} />
+          <img src={attachment} style={{ backgroundImage: attachment }} alt="" />
           <div className="factoryForm__clear" onClick={onClearAttachmentClick}>
             <span>Remove</span>
             <FontAwesomeIcon icon={faTimes} />

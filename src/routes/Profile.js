@@ -1,5 +1,5 @@
-import { authService, dbService } from "fbase";
-import React, { useEffect, useState } from "react";
+import { authService } from "fbase";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
 export default ({ userObj, refreshUser }) => {
