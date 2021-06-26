@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# Nwitter
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Twitter (mini)clone with React and Firebase with [Nomadcoders](https://github.com/nomadcoders/nwitter)
 
 ## Available Scripts
 
